@@ -9,7 +9,7 @@ import paymentRouter from "./routes/payment.js";
 import reviewRoutes from "./routes/reviewRoutes.js";
 
 
-dotenv.config();
+
 // Initialize Express App
 const app = express();
 
