@@ -17,7 +17,7 @@ await connectDB();
 // CORS Configuration
 const allowed = [
   process.env.FRONTEND_URL || 'http://localhost:5173', // Vite default
-  'https://your-site.netlify.app' // Replace later with actual Netlify URL
+ "https://onlinevehiclerentalsystem01.netlify.app/"
 ];
 
 // CORS middleware
@@ -29,7 +29,7 @@ app.use(cors({
       callback(new Error('Not allowed by CORS'));
     }
   },
-  credentials: true, // If you want to send cookies
+  credentials: true, 
 }));
 
 // Middleware
