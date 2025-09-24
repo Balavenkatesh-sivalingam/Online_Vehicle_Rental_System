@@ -8,6 +8,8 @@ import bookingRouter from "./routes/bookingRoutes.js";
 import paymentRouter from "./routes/payment.js";
 import reviewRoutes from "./routes/reviewRoutes.js";
 
+
+dotenv.config();
 // Initialize Express App
 const app = express();
 
@@ -17,7 +19,7 @@ await connectDB();
 // CORS Configuration
 const allowed = [
   process.env.FRONTEND_URL || 'http://localhost:5173', // Vite default
- "https://onlinevehiclerentalsystem01.netlify.app/"
+ "https://onlinevehiclerentalsystem01.netlify.app"
 ];
 
 // CORS middleware
