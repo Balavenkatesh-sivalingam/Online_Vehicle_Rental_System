@@ -15,12 +15,9 @@ const razorpay = new Razorpay({
 export const createRazorpayOrder = async (req, res) => {
   try {
     const userId = req.user._id;
-    
     const { car, pickupDate, returnDate } = req.body;
 
     const carData = await Car.findById(car);
-    
-
     if (!carData) return res.json({ success: false, message: "Car not found" });
 
     if (carData.owner.toString() === userId.toString()) {
@@ -48,7 +45,7 @@ export const createRazorpayOrder = async (req, res) => {
       Math.ceil((returned - picked) / (1000 * 60 * 60 * 24))
     );
     const price = carData.pricePerDay * noOfDays;
-    const amountInPaise = Math.floor(price * 100); // ensure integer
+    const amountInPaise = Math.floor(price * 100);
     const shortReceipt = `rcpt_${Date.now()}`;
 
     // 🔹 Debug logs
@@ -137,20 +134,21 @@ export const verifyRazorpayPayment = async (req, res) => {
     payment.status = "paid";
     await payment.save();
 
-    await sendMail(
+    // 🔹 Fire-and-forget email using Resend
+    sendMail(
       payment.user.email,
       "Booking Received - Online Vehicle Car Rental",
       `
       <h2>Payment received & booking created</h2>
       <p>Hi ${payment.user.name},</p>
-      <p>Your payment for <b>${payment.car.brand} ${
-        payment.car.model
-      }</b> was successful.</p>
+      <p>Your payment for <b>${payment.car.brand} ${payment.car.model}</b> was successful.</p>
       <p><b>Pickup:</b> ${new Date(payment.pickupDate).toDateString()}</p>
       <p><b>Return:</b> ${new Date(payment.returnDate).toDateString()}</p>
       `,
       `Hi ${payment.user.name}, your booking for ${payment.car.brand} ${payment.car.model} is received and pending owner confirmation.`
-    );
+    )
+      .then((r) => console.log("📧 Mail result:", r))
+      .catch((err) => console.error("❌ Mail error:", err));
 
     res.json({
       success: true,
